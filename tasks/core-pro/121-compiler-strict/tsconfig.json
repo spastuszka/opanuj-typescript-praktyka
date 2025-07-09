@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strictBindCallApply": false,
+    "noImplicitThis": false,
+    "allowImportingTsExtensions": true,
+    "noEmit": true
+  }
+}
