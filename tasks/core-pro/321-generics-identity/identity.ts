@@ -16,6 +16,9 @@ interface RedditIdentity {
   userName: string;
 }
 
+export type Identity = GoogleIdentity | AppleIdentity | RedditIdentity;
+export type Provider = 'google' | 'apple' | 'reddit';
+
 const users: ReadonlyArray<GoogleIdentity | AppleIdentity | RedditIdentity> = [
   { id: '1', provider: 'google', userName: 'John Doe' },
   { id: '2', provider: 'apple', userName: 'Kate Williams' },
@@ -27,32 +30,72 @@ const users: ReadonlyArray<GoogleIdentity | AppleIdentity | RedditIdentity> = [
 
 class GoogleIdentityProcessor {
   findById(id: string): GoogleIdentity | undefined {
-    return users.find((user) => user.id === id && user.provider === 'google') as GoogleIdentity | undefined;
+    return users.find((user) => user.id === id && user.provider === 'google') as
+      | GoogleIdentity
+      | undefined;
   }
 
   findByUserName(userName: string): GoogleIdentity | undefined {
-    return users.find((user) => user.userName === userName && user.provider === 'google') as GoogleIdentity | undefined;
+    return users.find((user) => user.userName === userName && user.provider === 'google') as
+      | GoogleIdentity
+      | undefined;
   }
 }
 
 class AppleIdentityProcessor {
   findById(id: string): AppleIdentity | undefined {
-    return users.find((user) => user.id === id && user.provider === 'apple') as AppleIdentity | undefined;
+    return users.find((user) => user.id === id && user.provider === 'apple') as
+      | AppleIdentity
+      | undefined;
   }
 
   findByUserName(userName: string): AppleIdentity | undefined {
-    return users.find((user) => user.userName === userName && user.provider === 'apple') as AppleIdentity | undefined;
+    return users.find((user) => user.userName === userName && user.provider === 'apple') as
+      | AppleIdentity
+      | undefined;
   }
 }
 
 class RedditIdentityProcessor {
   findById(id: string): RedditIdentity | undefined {
-    return users.find((user) => user.id === id && user.provider === 'reddit') as RedditIdentity | undefined;
+    return users.find((user) => user.id === id && user.provider === 'reddit') as
+      | RedditIdentity
+      | undefined;
   }
 
   findByUserName(userName: string): RedditIdentity | undefined {
-    return users.find((user) => user.userName === userName && user.provider === 'reddit') as RedditIdentity | undefined;
+    return users.find((user) => user.userName === userName && user.provider === 'reddit') as
+      | RedditIdentity
+      | undefined;
   }
 }
 
-export class IdentityProcessor {}
+export class IdentityProcessor<T extends Identity = Identity> {
+  constructor(private provider?: T['provider']) {}
+
+  findById(id: string): T | undefined {
+    if (this.provider) {
+      return users.find((user) => user.id === id && user.provider === this.provider) as
+        | T
+        | undefined;
+    }
+    return users.find((user) => user.id === id) as T | undefined;
+  }
+
+  findByUserName(userName: string): T | undefined {
+    if (this.provider) {
+      return users.find((user) => user.userName === userName && user.provider === this.provider) as
+        | T
+        | undefined;
+    }
+    return users.find((user) => user.userName === userName) as T | undefined;
+  }
+
+  findByProvider(provider: Provider): Identity[] {
+    return users.filter((user) => user.provider === provider);
+  }
+
+  findAll(): Identity[] {
+    return [...users];
+  }
+}
